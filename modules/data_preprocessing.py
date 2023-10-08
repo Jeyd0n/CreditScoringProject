@@ -5,8 +5,9 @@ import scipy.stats as st
 
 class DataProcessing:
 
-    def __init__(self, data: pd.DataFrame):
+    def __init__(self, data: pd.DataFrame, is_train=False):
         self.data = data
+        self.is_train = is_train
 
     def fill_null(self):
         # Функция для полной обработки набора данных
@@ -52,12 +53,16 @@ class DataProcessing:
         self.data["Changed_Credit_Limit"] = pd.to_numeric(self.data["Changed_Credit_Limit"], errors="coerce")
         self.data['Changed_Credit_Limit'] = self.data['Changed_Credit_Limit'].fillna(self.data['Changed_Credit_Limit'].median())
 
+        self.data["Num_of_Delayed_Payment"] = pd.to_numeric(self.data["Num_of_Delayed_Payment"], errors="coerce")
+        self.data['Num_of_Delayed_Payment'] = self.data['Num_of_Delayed_Payment'].fillna(0)
+
         return self
 
     def cat_decode(self):
         # Функция для преобразования категориальных признаков 
 
         map_table = {
+            '...': 0,
             'January': 1,
             'February': 2,
             'March': 3,
@@ -65,7 +70,11 @@ class DataProcessing:
             'May': 5,
             'June': 6,
             'July': 7,
-            'August': 8
+            'August': 8,
+            'September': 9,
+            'October': 10,
+            'November': 11,
+            'December': 12
         }
 
         self.data['Month'] = self.data['Month'].replace(map_table)
@@ -108,6 +117,23 @@ class DataProcessing:
         self.data['Delay_from_due_date'] = self.clear_column(self.data['Delay_from_due_date'], list(range(0, max(self.data['Delay_from_due_date'].values))))
         self.data['Delay_from_due_date'] = self.data['Delay_from_due_date'].fillna(0)
 
+        return self
+
+    def drop_usless_columns(self):
+        # Удаление признаков, не влияющих на таргет
+
+        self.data = self.data.drop(['Annual_Income', 'Occupation', 'Num_Bank_Accounts', 'Num_Credit_Card', 'Interest_Rate', 'Total_EMI_per_month'], axis=1)
+
+        return self
+
+    def feature_engineering(self):
+        # Генерация признаков, указывающих на динамику изменения признака относительно его значений на протяжении всех месяцов 
+
+        self.data['Salary_Vector'] = self.data.groupby('SSN')['Monthly_Inhand_Salary'].rank()
+        self.data['Credit_Card_Usage_Vector'] = self.data.groupby('SSN')['Credit_Utilization_Ratio'].rank()
+
+        return self
+
     def decode_target(self):
         # Преобразование таргета с помощью хэш-таблицы
 
@@ -123,13 +149,29 @@ class DataProcessing:
     
     def transform(self) -> pd.DataFrame:
 
+        # См data_preprocessing.ipynb
         self.fill_null()
         self.to_type()
         self.cat_decode()
         self.clear_ejection()
-        self.decode_target()
 
-        X = self.data.drop('Credit_Score', axis=1)
-        y = self.data['Credit_Score']
+        # См EDA.ipynb
+        self.drop_usless_columns()
 
-        return X, y
+        # См feature_engineering.ipynb
+        self.feature_engineering()
+
+        # Удаляем признак, по которому мы идентефицировали клиента, так как он нам больше не нужен
+        self.data = self.data.drop('SSN', axis=1)
+
+        # Так же из data_preprocessing.ipynb
+        if self.is_train:
+            self.decode_target()
+        
+            X = self.data.drop('Credit_Score', axis=1)
+            y = self.data['Credit_Score']
+
+            return X, y
+        
+        else:
+            return self.data
