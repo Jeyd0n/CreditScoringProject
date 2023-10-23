@@ -89,8 +89,12 @@ class DataProcessing:
 
         # Произведем OHE над некоторыми колонками 
         self.data = pd.concat((self.data.drop('Payment_of_Min_Amount', axis=1), pd.get_dummies(self.data['Payment_of_Min_Amount'], dtype=int)), axis=1)
+
         self.data = pd.concat((self.data.drop('Payment_Behaviour', axis=1), pd.get_dummies(self.data['Payment_Behaviour'], dtype=int)), axis=1)
+        train = train.drop('unknown', axis=1)
+
         self.data = pd.concat((self.data.drop('Credit_Mix', axis=1), pd.get_dummies(self.data['Credit_Mix'], dtype=int)), axis=1)
+        train = train.drop('NoData', axis=1)
 
         return self
     
@@ -122,7 +126,7 @@ class DataProcessing:
     def drop_usless_columns(self):
         # Удаление признаков, не влияющих на таргет
 
-        self.data = self.data.drop(['Annual_Income', 'Occupation', 'Num_Bank_Accounts', 'Num_Credit_Card', 'Interest_Rate', 'Total_EMI_per_month'], axis=1)
+        self.data = self.data.drop(['Annual_Income', 'Monthly_Balance', 'Occupation', 'Month', 'Total_EMI_per_month', 'Credit_Utilization_Ratio'], axis=1)
 
         return self
 
