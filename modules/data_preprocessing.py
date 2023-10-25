@@ -91,10 +91,10 @@ class DataProcessing:
         self.data = pd.concat((self.data.drop('Payment_of_Min_Amount', axis=1), pd.get_dummies(self.data['Payment_of_Min_Amount'], dtype=int)), axis=1)
 
         self.data = pd.concat((self.data.drop('Payment_Behaviour', axis=1), pd.get_dummies(self.data['Payment_Behaviour'], dtype=int)), axis=1)
-        train = train.drop('unknown', axis=1)
+        self.data = self.data.drop('unknown', axis=1)
 
         self.data = pd.concat((self.data.drop('Credit_Mix', axis=1), pd.get_dummies(self.data['Credit_Mix'], dtype=int)), axis=1)
-        train = train.drop('NoData', axis=1)
+        self.data = self.data.drop('NoData', axis=1)
 
         return self
     
@@ -130,14 +130,6 @@ class DataProcessing:
 
         return self
 
-    def feature_engineering(self):
-        # Генерация признаков, указывающих на динамику изменения признака относительно его значений на протяжении всех месяцов 
-
-        self.data['Salary_Vector'] = self.data.groupby('SSN')['Monthly_Inhand_Salary'].rank()
-        self.data['Credit_Card_Usage_Vector'] = self.data.groupby('SSN')['Credit_Utilization_Ratio'].rank()
-
-        return self
-
     def decode_target(self):
         # Преобразование таргета с помощью хэш-таблицы
 
@@ -161,9 +153,6 @@ class DataProcessing:
 
         # См EDA.ipynb
         self.drop_usless_columns()
-
-        # См feature_engineering.ipynb
-        self.feature_engineering()
 
         # Удаляем признак, по которому мы идентефицировали клиента, так как он нам больше не нужен
         self.data = self.data.drop('SSN', axis=1)
