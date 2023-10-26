@@ -1,2 +1,3 @@
-data
 scoring_venv
+
+.env
