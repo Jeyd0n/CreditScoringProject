@@ -14,7 +14,6 @@ class DataProcessing:
 
         # Заполнение пропусков в данных
         self.data['Monthly_Inhand_Salary'] = self.data['Monthly_Inhand_Salary'].fillna(np.median(self.data['Monthly_Inhand_Salary'].dropna())).astype(int)
-        self.data['Type_of_Loan'] = self.data['Type_of_Loan'].fillna(self.data['Type_of_Loan'].value_counts().index[0])
         self.data['Num_of_Delayed_Payment'] = self.data['Num_of_Delayed_Payment'].fillna(0)
 
         self.data['Num_Credit_Inquiries'] = self.data['Num_Credit_Inquiries'].fillna(0)
@@ -77,9 +76,11 @@ class DataProcessing:
             'December': 12
         }
 
+        map_for_behaviour = {k: idx for idx, k in enumerate(self.data['Payment_Behaviour'].unique())}
+
         self.data['Month'] = self.data['Month'].replace(map_table)
 
-        self.data['Payment_Behaviour'] = self.data['Payment_Behaviour'].map(lambda x: 'unknown' if x == '!@9#%8' else x)
+        self.data['Payment_Behaviour'] = self.data['Payment_Behaviour'].replace(map_for_behaviour)
                 
         self.data['Occupation'] = self.data['Occupation'].map(lambda x: 'unknown' if x == '_______' else x)
         occupation_map_table = {k: v for v, k in enumerate(self.data['Occupation'].unique())}
@@ -89,9 +90,6 @@ class DataProcessing:
 
         # Произведем OHE над некоторыми колонками 
         self.data = pd.concat((self.data.drop('Payment_of_Min_Amount', axis=1), pd.get_dummies(self.data['Payment_of_Min_Amount'], dtype=int)), axis=1)
-
-        self.data = pd.concat((self.data.drop('Payment_Behaviour', axis=1), pd.get_dummies(self.data['Payment_Behaviour'], dtype=int)), axis=1)
-        self.data = self.data.drop('unknown', axis=1)
 
         self.data = pd.concat((self.data.drop('Credit_Mix', axis=1), pd.get_dummies(self.data['Credit_Mix'], dtype=int)), axis=1)
         self.data = self.data.drop('NoData', axis=1)
@@ -126,7 +124,7 @@ class DataProcessing:
     def drop_usless_columns(self):
         # Удаление признаков, не влияющих на таргет
 
-        self.data = self.data.drop(['Annual_Income', 'Monthly_Balance', 'Occupation', 'Month', 'Total_EMI_per_month', 'Credit_Utilization_Ratio'], axis=1)
+        self.data.drop(['Month', 'Occupation', 'Credit_Utilization_Ratio', 'NM', 'Payment_Behaviour'], axis=1, inplace=True)
 
         return self
 
