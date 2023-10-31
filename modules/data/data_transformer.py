@@ -5,8 +5,8 @@ import scipy.stats as st
 
 class DataProcessing:
 
-    def __init__(self, data: pd.DataFrame, is_train=False):
-        self.data = data
+    def __init__(self, dataset: pd.DataFrame, is_train=False):
+        self.data = dataset
         self.is_train = is_train
 
     def fill_null(self):
@@ -30,7 +30,7 @@ class DataProcessing:
         # Приведение признаков к нужному типу данных, а так же заполнение пропусков после преобразований
 
         self.data['Amount_invested_monthly'] = pd.to_numeric(self.data['Amount_invested_monthly'], errors='coerce')
-        self.data['Amount_invested_monthly'] = self.data['Amount_invested_monthly'].fillna(st.mode(self.data['Amount_invested_monthly'])[0])
+        self.data['Amount_invested_monthly'] = self.data['Amount_invested_monthly'].fillna(0)
 
         self.data['Monthly_Balance'] = pd.to_numeric(self.data['Monthly_Balance'], errors='coerce')
         self.data['Monthly_Balance'] = self.data['Monthly_Balance'].fillna(self.data['Monthly_Balance'].median())
