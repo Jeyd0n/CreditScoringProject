@@ -7,6 +7,8 @@ import pandas as pd
 from modules.data.data_transformer import DataProcessing
 
 def transform_data(dataset: pd.DataFrame, is_train=False) -> pd.DataFrame:
+    """Обработка сырого датасета с помощью кастомного класса"""
+
     if is_train:
         X, y = DataProcessing(
             dataset,
@@ -22,4 +24,3 @@ def transform_data(dataset: pd.DataFrame, is_train=False) -> pd.DataFrame:
         ).transform()
 
         return X
-

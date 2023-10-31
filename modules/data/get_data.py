@@ -7,6 +7,8 @@ from sqlalchemy import create_engine
 load_dotenv()
 
 def get_data(is_train=False) -> pd.DataFrame: 
+    """Импорт сырого датасета из базы данных"""
+
     engine = create_engine(os.getenv('POSTGRESQL_KEY'))
     
     with engine.connect() as connection:

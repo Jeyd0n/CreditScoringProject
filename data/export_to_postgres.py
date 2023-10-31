@@ -8,25 +8,28 @@ load_dotenv()
 
 
 def export_train(dataframe: pd.DataFrame, connection):
+    """Экспорт тренировочного набора данных в локальную базу данных"""
+
     dataframe.to_sql(
         'train_data',
         con=connection,
         if_exists='replace',
         index=False
-        )
+    )
 
 
 def export_test(dataframe: pd.DataFrame, connection):
+    """Экспорт тестового набора данных в локальную базу данных"""
+
     dataframe.to_sql(
         'test_data',
         con=connection,
         if_exists='replace',
         index=False
-        )
+    )
 
 
 def main():
-
     engine = create_engine(os.getenv('POSTGRESQL_KEY'))
     connection = engine.connect()
 

@@ -4,15 +4,18 @@ import scipy.stats as st
 
 
 class DataProcessing:
+    """
+    Класс, предназначенный для преобразования сырого набора данных
+    на основе выводов, сделанных в ноутбуке
+    """
 
     def __init__(self, dataset: pd.DataFrame, is_train=False):
         self.data = dataset
         self.is_train = is_train
 
     def fill_null(self):
-        # Функция для полной обработки набора данных
-
         # Заполнение пропусков в данных
+
         self.data['Monthly_Inhand_Salary'] = self.data['Monthly_Inhand_Salary'].fillna(np.median(self.data['Monthly_Inhand_Salary'].dropna())).astype(int)
         self.data['Num_of_Delayed_Payment'] = self.data['Num_of_Delayed_Payment'].fillna(0)
 

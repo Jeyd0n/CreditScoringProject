@@ -14,6 +14,8 @@ from modules.data.transform_data import transform_data
 
 
 def model_train(X_train, y_train):
+    """Инициализация пайплайна и его последующее обучение"""
+
     baseline = Pipeline([
         ('Scaler', StandardScaler()),
         ('Classifier', OneVsRestClassifier(RandomForestClassifier(random_state=42)))
@@ -26,6 +28,11 @@ def model_train(X_train, y_train):
 
 
 def save_model(baseline):
+    """"
+    Сохранение итоговой модели в локальный репозиторий BentoML
+    и вывод тэг-а сохраненной модели в консоль
+    """
+
     saved_model = bentoml.sklearn.save_model(
         name='baseline_classifier',
         model=baseline
