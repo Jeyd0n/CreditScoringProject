@@ -3,6 +3,7 @@ import sys
 sys.path.append('.')
 
 
+import logging
 import bentoml
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
@@ -11,6 +12,12 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.ensemble import RandomForestClassifier
 from modules.data.get_data import get_data
 from modules.data.transform_data import transform_data
+
+
+logger = logging.getLogger(__name__)
+handler = logging.StreamHandler(sys.stdout)
+logger.setLevel(logging.INFO)
+logger.addHandler(handler)
 
 
 def model_train(X_train, y_train):
@@ -23,6 +30,7 @@ def model_train(X_train, y_train):
     baseline.fit(
         X_train, y_train
     )
+    logger.info('Модель успешно обучена')
 
     return baseline
 
@@ -38,7 +46,7 @@ def save_model(baseline):
         model=baseline
     )
 
-    print(f'Модель сохранена: {saved_model}')
+    logger.info(f'Модель сохранена: {saved_model}')
 
 
 def main():
