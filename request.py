@@ -28,10 +28,8 @@ def request_get_predict(X: np.array, y: np.array) -> list:
 def request_show_metrics(X: np.array, y: np.array) -> tuple:
     input = MultipartEncoder(
         fields={
-            # 'X': f'{X.tolist()}',
-            # 'y': f'{y.tolist()}'
-            'X': f'{X}',
-            'y': f'{y}'
+            'X': f'{X.tolist()}',
+            'y': f'{y.tolist()}'
         }
     )
 
@@ -56,8 +54,8 @@ def main():
         y=y[124:154].to_numpy()
     )
     request_show_metrics(
-        X=X.to_numpy().tolist(),
-        y=y.to_numpy().tolist()
+        X=X.to_numpy(),
+        y=y.to_numpy()
     )
 
 
