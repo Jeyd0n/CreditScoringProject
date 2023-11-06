@@ -39,7 +39,7 @@ def request_show_metrics(X: np.array, y: np.array) -> tuple:
         data=input
     ).text
 
-    print(metrics)
+    return metrics
 
 
 def main():
