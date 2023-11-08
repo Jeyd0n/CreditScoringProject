@@ -12,7 +12,7 @@ from modules.data.transform_data import transform_data
 from sklearn.metrics import precision_score, recall_score, f1_score
 
 
-baseline_classifier = bentoml.sklearn.get('baseline_classifier:latest').to_runner()
+baseline_classifier = bentoml.sklearn.get('baseline_classifier:jmg4qqtxqcphuqro').to_runner()
 
 app = bentoml.Service(
     'baseline_service',
